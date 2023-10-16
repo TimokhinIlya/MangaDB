@@ -62,7 +62,7 @@ COMMENT ON COLUMN dbo.manga.manga_id IS 'Идентификатор манги';
 COMMENT ON COLUMN dbo.manga.url_id IS 'Идентификатор сайта (последняя вышедшая глава)';
 COMMENT ON COLUMN dbo.manga.manga_name IS 'Название манги';
 COMMENT ON COLUMN dbo.manga.manga_desc IS 'Описание состояния';
-COMMENT ON COLUMN dbo.manga.current_chapter IS 'Последняя прочитаная глава';
+COMMENT ON COLUMN dbo.manga.current_chapter IS 'Последняя прочитанная глава';
 COMMENT ON COLUMN dbo.manga.last_chapter IS 'Последняя вышедшая глава';
 COMMENT ON COLUMN dbo.manga.manga_chapter_data IS 'Дата выхода главы';
 
