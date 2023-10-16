@@ -19,6 +19,7 @@ def get_manga_link(manga_name: str) -> str: # Получаем ссылку на
     manga_url = f"https://remanga.org/manga/{eng_name.replace(' ','-')}"
     return manga_url
 
+
 def get_manga_id(manga_url:str) -> str: # Получаем id манги
 
     # URL страницы с мангой
