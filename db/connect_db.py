@@ -3,9 +3,9 @@ import psycopg2
 def create_connection():
     try:
         conn = psycopg2.connect(
-            dbname="manga_db",
+            dbname="postgres",
             user="postgres",
-            password="",
+            password="Cthuttdbx7",
             host="localhost",
             port="5432"
         )

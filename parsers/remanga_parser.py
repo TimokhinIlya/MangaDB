@@ -38,18 +38,25 @@ def get_manga_id(manga_url:str) -> str: # Получаем id манги
 
     return manga_id
 
-def get_manga_chapter(manga_id)-> int: # Получаем последную главу манги
+def get_manga_chapter(manga_id:int)-> tuple: # Получаем последную главу манги
     
     json_url = f'https://api.remanga.org/api/titles/chapters/?branch_id={manga_id}&ordering=-index&user_data=1&count=40&page=1'
     # Получение JSON-данных из ссылки
     response = requests.get(json_url)
     data = response.json()
 
-    last_chapter_with_null_price = None
+    last_chapter, chapter_date = None, None
 
     for content in (data['content']):
         if not content['is_paid']:
-            last_chapter_with_null_price = content['chapter']
+            last_chapter, chapter_date = int(content['chapter']), content['upload_date']
             break
 
-    return last_chapter_with_null_price
+    return last_chapter, chapter_date
+
+def manga_parser (manga_name:str)-> tuple:
+    manga_tuple = tuple()
+    manga_url = get_manga_link(manga_name)
+    manga_id = get_manga_id(manga_url)
+    manga_tuple = get_manga_chapter(manga_id) + (manga_url, )
+    return manga_tuple
