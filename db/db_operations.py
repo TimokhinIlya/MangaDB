@@ -2,18 +2,20 @@ from connect_db import *
 
 SCHEMA_NAME = "dbo"
 TABLE_NAME = "manga"
-ID_FIELD = ""
-NAME_FIELD = ""
-AGE_FIELD = ""
+NAME_FIELD = "manga_name"
+URL_FIELD = "manga_url"
+CUR_CHAPTER = "current_chapter"
+LAST_CHAPTER = "last_chapter"
+CHAPTER_DATE = "manga_chapter_date"
 
-def manga_ins(name, age):
+def manga_ins(name, cur):
     conn = create_connection()
     if conn:
         cur = conn.cursor()
         try:
             cur.execute(f'''
-                INSERT INTO {TABLE_NAME} ({NAME_FIELD}, {AGE_FIELD}) VALUES (%s, %s)
-            ''', (name, age))
+                INSERT INTO {TABLE_NAME} ({NAME_FIELD}, {CUR_CHAPTER}) VALUES (%s, %s)
+            ''', (name, cur))
             conn.commit()
         except psycopg2.Error as e:
             print(f"Error: {e}")
