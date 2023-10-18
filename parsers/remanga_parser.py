@@ -58,5 +58,6 @@ def manga_parser (manga_name:str)-> tuple:
     manga_tuple = tuple()
     manga_url = get_manga_link(manga_name)
     manga_id = get_manga_id(manga_url)
-    manga_tuple = get_manga_chapter(manga_id) + (manga_url, )
+    manga_tuple = (manga_url, ) + get_manga_chapter(manga_id)
     return manga_tuple
+
