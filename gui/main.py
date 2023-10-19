@@ -1,7 +1,8 @@
 import tkinter as tk
 import os
 import sys
-sys.path.insert(1, os.path.join(sys.path[0], '../db'))
+sys.path.insert(1, os.path.join(sys.path[0], '..\db'))
+print(sys.path)
 from db_operations import *
 def button_new_manga_ins():
     name = entry_name.get()
