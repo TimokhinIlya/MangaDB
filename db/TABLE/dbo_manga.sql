@@ -5,9 +5,9 @@ CREATE TABLE IF NOT EXISTS dbo.manga (
 	manga_id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
 	manga_url VARCHAR(200),
 	manga_name VARCHAR(150) NOT NULL UNIQUE,
-	manga_desc VARCHAR,
-	current_chapter INT,
-	last_chapter INT,
+	manga_desc VARCHAR(30),
+	current_chapter REAL,
+	last_chapter REAL,
 	last_chapter_date TIMESTAMP WITHOUT TIME ZONE
 )
 WITH (oids = false);

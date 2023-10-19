@@ -49,7 +49,7 @@ def get_manga_chapter(manga_id:int)-> tuple: # Получаем последну
 
     for content in (data['content']):
         if not content['is_paid']:
-            last_chapter, chapter_date = int(content['chapter']), content['upload_date']
+            last_chapter, chapter_date = float(content['chapter']), content['upload_date']
             break
 
     return last_chapter, chapter_date

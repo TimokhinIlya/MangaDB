@@ -16,6 +16,23 @@ def new_manga_ins(name:str, cr_chap:int)-> None:
             cur.close()
             conn.close()
 
+def manga_chap_upd(name:str, cr_chap:int)-> None:
+    conn = create_connection()
+    if conn:
+        cur = conn.cursor()
+        try:
+            cur.execute(f'''
+                UPDATE dbo.manga
+                SET current_chapter = %s
+                WHERE manga_name = %s
+            ''', (cr_chap, name))
+            conn.commit()
+        except psycopg2.Error as e:
+            print(f"Error: {e}")
+        finally:
+            cur.close()
+            conn.close()
+
 def manga_upd(url:str, l_chap:int, date:str, name:str)-> None:
     conn = create_connection()
     if conn:
@@ -70,13 +87,10 @@ def manga_query()-> json:
                     'manga_url': row[1],
                     'current_chapter': row[2],
                     'last_chapter': row[3],
-                    'last_chapter_date': row[4],
+                    'last_chapter_date': str(row[4]),
                     'manga_desc': row[5]
                 })
-
-            json_data = json.dumps(data)  # Преобразование данных в формат JSON
-            decoded_result = json_data.encode('utf-8').decode('unicode_escape')
-            return decoded_result
+            return data
 
         except psycopg2.Error as e:
             print(f"Error: {e}")
