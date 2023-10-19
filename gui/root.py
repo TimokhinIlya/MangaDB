@@ -1,13 +1,17 @@
 import tkinter as tk
-import os
-import sys
-sys.path.insert(1, os.path.join(sys.path[0], '..\db'))
-print(sys.path)
-from db_operations import *
+from db.db_operations import *
+from parsers.remanga_parser import *
+
 def button_new_manga_ins():
-    name = entry_name.get()
+    new_name = str(entry_name.get())
     cr_chap = int(entry_chap.get())
-    new_manga_ins(name, cr_chap)
+    new_manga_ins(new_name, cr_chap)
+
+def button_manga_parser():
+    manga_name_upd = str(entry_manga_name.get())
+    params = manga_parser(manga_name_upd)
+    manga_upd(str(params[0]), int(params[1]), str(params[2]), manga_name_upd )
+    
 
 # Создаем экземпляр главного окна
 root = tk.Tk()
@@ -38,9 +42,20 @@ label_chap.pack()
 entry_chap = tk.Entry(root)
 entry_chap.pack()
 
-# Создаем кнопку
-button = tk.Button(root, text="Добавить мангу", command=button_new_manga_ins)
-button.pack(pady=20)
+# Создаем метку для поля ввода имени манги для второй функции
+label_manga_name = tk.Label(root, text="Название манги для обновления:")
+label_manga_name.pack()
+
+# Создаем поле ввода для имени манги для второй функции
+entry_manga_name = tk.Entry(root)
+entry_manga_name.pack()
+
+# Создаем кнопки
+button_ins = tk.Button(root, text="Добавить мангу", command=button_new_manga_ins)
+button_ins.pack(pady=20)
+
+button_upd = tk.Button(root, text="Обновить последние главы", command=button_manga_parser)
+button_upd.pack(pady=20)
 
 # Запускаем главный цикл обработки событий
 root.mainloop()

@@ -23,7 +23,7 @@ def manga_upd(url:str, l_chap:int, date:str, name:str)-> None:
         try:
             cur.execute(f'''
                 UPDATE dbo.manga
-                SET manga_url = %s, last_chapter = %s, last_chapter_date = DATE(%s)
+                SET manga_url = %s, last_chapter = %s, last_chapter_date = %s
                 WHERE manga_name = %s
             ''', (url, l_chap, date, name))
             conn.commit()
