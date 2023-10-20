@@ -97,3 +97,37 @@ def manga_query()-> json:
         finally:
             cur.close()
             conn.close()
+
+def manga_del(name:str)-> None:
+    conn = create_connection()
+    if conn:
+        cur = conn.cursor()
+        try:
+            cur.execute(f'''
+                DELETE FROM dbo.manga
+                WHERE manga_name = %s
+            ''', (name, ))
+            conn.commit()
+        except psycopg2.Error as e:
+            print(f"Error: {e}")
+        finally:
+            cur.close()
+            conn.close()
+
+def get_manga_url(name:str)-> str:
+    conn = create_connection()
+    if conn:
+        cur = conn.cursor()
+        try:
+            cur.execute(f'''
+                SELECT manga_url FROM dbo.manga
+                WHERE manga_name = %s
+            ''', (name, ))
+            url = cur.fetchall()
+            conn.commit()
+            return url[0][0]
+        except psycopg2.Error as e:
+            print(f"Error: {e}")
+        finally:
+            cur.close()
+            conn.close()

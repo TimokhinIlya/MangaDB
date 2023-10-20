@@ -1,7 +1,7 @@
 import tkinter as tk
+import webbrowser  as wb
 from db.db_operations import *
 from parsers.remanga_parser import *
-import pyperclip
 import math
 
 def button_new_manga_ins():
@@ -125,7 +125,6 @@ def button_manga_query():
         data = manga_query()
         for item in data:
             if item['manga_name'] == requested_name:
-                pyperclip.copy(item['manga_url']) # Копирование в буфер обмена
                 text.delete(1.0, tk.END)  # Очистка содержимого поля
                 text.insert(tk.END, f"Имя манги: {item['manga_name']}\n"
                                     f"Ссылка на мангу: {item['manga_url']}\n"
@@ -141,13 +140,23 @@ def button_manga_query():
 
     create_input_window()
 
+def button_manga_del():
+    manga_name = entry.get()
+    manga_del(manga_name)
+
+
+def button_manga_open():
+    manga_name = entry.get()
+    url = get_manga_url(manga_name)
+    wb.open_new_tab(url)
+
 # Создаем экземпляр главного окна
 root = tk.Tk()
 root.title("MangaDB")
 
 # Устанавливаем размеры окна
-window_width = 600
-window_height = 280
+window_width = 670
+window_height = 375
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 x_coordinate = (screen_width / 2) - (window_width / 2)
@@ -155,24 +164,36 @@ y_coordinate = (screen_height / 2) - (window_height / 2)
 root.geometry(f"{window_width}x{window_height}+{int(x_coordinate)}+{int(y_coordinate)}")
 
 # Создаем кнопки
+x_button = 50
+y_button = 75
+const_coord = 47
+
+button_read = tk.Button(root, text="Читать", command=button_manga_open)
+button_read.pack(pady=10)
+button_read.place(x=x_button, y=y_button)
+
 button_ins = tk.Button(root, text="Добавить", command=button_new_manga_ins)
 button_ins.pack(pady=10)
-button_ins.place(x=50, y=75)
+button_ins.place(x=x_button, y=y_button + const_coord)
 
 button_upd = tk.Button(root, text="Обновить", command=button_manga_chap_upd)
 button_upd.pack(pady=10)
-button_upd.place(x=50, y=120)
+button_upd.place(x=x_button, y=y_button + 2 * const_coord)
 
 button_upd_desc = tk.Button(root, text="Изменить статус", command=button_manga_desc_upd)
 button_upd_desc.pack(pady=10)
-button_upd_desc.place(x=50, y=165)
+button_upd_desc.place(x=x_button, y=y_button + 3 * const_coord)
 
 button_query = tk.Button(root, text="Сведения", command=button_manga_query)
 button_query.pack(pady=10)
-button_query.place(x=50, y=210)
+button_query.place(x=x_button, y=y_button + 4 * const_coord)
 
-button_query = tk.Button(root, text="Запуск Анализатора-9000", command=button_manga_query, width=20, height=2)
-button_query.place(x=413, y=24)
+button_del = tk.Button(root, text="Удалить", command=button_manga_del)
+button_del.pack(pady=10)
+button_del.place(x=x_button, y=y_button + 5 * const_coord)
+
+button_query = tk.Button(root, text="Запуск анализатора", command=button_manga_query, width=20, height=2)
+button_query.place(x=458, y=24)
 
 label = tk.Label(root, text="Введите название манги:")
 label.pack(pady=5)
@@ -182,9 +203,10 @@ entry = tk.Entry(root,width=50)
 entry.pack(pady=10)
 entry.place(x=50, y=25)
 
-manga_names_text = tk.Text(root, height=10, width=45)
+manga_names_text = tk.Text(root, height=16, width=45)
 manga_names_text.pack(pady=10)
 manga_names_text.place(x=200, y=75)
+manga_names_text.configure(font=("Georgia", 10, "italic"))
 
 data = manga_query()
 manga_details = [(item["manga_name"], math.ceil(item["last_chapter"] - item["current_chapter"])) for item in data]
