@@ -1,7 +1,9 @@
 import tkinter as tk
 import webbrowser  as wb
 from db.db_operations import *
-from parsers.remanga_parser import *
+from parsers.mangalib_parser import mangalib_parser
+from parsers.readmanga_parser import  readmanga_parser
+from parsers.remanga_parser import remanga_parser
 import math
 
 def button_new_manga_ins():
@@ -66,24 +68,13 @@ def button_manga_chap_upd():
     button_accept = tk.Button(input_window_upd_chap, text="Принять", command=manga_chap_upd_input_window)
     button_accept.pack(pady=20)
 
-"""
-def button_manga_parser():
-    def manga_parser_input_window():
-        manga_name_upd = entry.get()
-        params = manga_parser(manga_name_upd)
-        manga_upd(str(params[0]), params[1], str(params[2]), manga_name_upd)
-        input_window_upd.destroy()
-
-    button_accept = tk.Button(input_window_upd, text="Принять", command=manga_parser_input_window)
-    button_accept.pack(pady=20)
-"""
 def button_manga_desc_upd():
     def manga_desc_upd_input_window():
         desc = str(entry_desc.get())
         name = str(entry.get())
         manga_desc_upd(desc, name)
         input_window_upd_desc.destroy()
-
+        
     input_window_upd_desc = tk.Toplevel(root)
     input_window_upd_desc.title("Добавить/Обновить статус манги")
 
@@ -122,7 +113,6 @@ def button_manga_query():
         text.pack()
 
         requested_name = str(entry.get())  # Получение введенного значения из поля ввода
-        data = manga_query()
         for item in data:
             if item['manga_name'] == requested_name:
                 text.delete(1.0, tk.END)  # Очистка содержимого поля
@@ -144,12 +134,18 @@ def button_manga_del():
     manga_name = entry.get()
     manga_del(manga_name)
 
-
 def button_manga_open():
     manga_name = entry.get()
     url = get_manga_url(manga_name)
     wb.open_new_tab(url)
 
+def button_manga_parser():
+    manga_names = [item["manga_name"] for item in data]
+    for i in range(len(manga_names)):
+        manga_list = []
+        manga_list.extend([remanga_parser(manga_names[i]), mangalib_parser(manga_names[i]), readmanga_parser(manga_names[i])])
+        result = max(manga_list, key = lambda x: x[1])
+        manga_upd(result[0], result[1], result[2], manga_names[i])
 # Создаем экземпляр главного окна
 root = tk.Tk()
 root.title("MangaDB")
@@ -192,7 +188,7 @@ button_del = tk.Button(root, text="Удалить", command=button_manga_del)
 button_del.pack(pady=10)
 button_del.place(x=x_button, y=y_button + 5 * const_coord)
 
-button_query = tk.Button(root, text="Запуск анализатора", command=button_manga_query, width=20, height=2)
+button_query = tk.Button(root, text="Запуск анализатора", command=button_manga_parser, width=20, height=2)
 button_query.place(x=458, y=24)
 
 label = tk.Label(root, text="Введите название манги:")
@@ -210,7 +206,6 @@ manga_names_text.configure(font=("Georgia", 10, "italic"))
 
 data = manga_query()
 manga_details = [(item["manga_name"], math.ceil(item["last_chapter"] - item["current_chapter"])) for item in data]
-
 # Сортируем список по второму элементу каждого кортежа
 manga_details.sort(key=lambda x: x[1], reverse=True)
 

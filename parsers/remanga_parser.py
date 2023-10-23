@@ -18,7 +18,7 @@ def get_manga_link(manga_name: str) -> str: # Получаем ссылку на
     eng_name = None
 
     for content in (data['content']):
-        if content['main_name'] == manga_name:
+        if content['main_name'].lower() == manga_name.lower():
             eng_name = content['dir']
             break
     if eng_name is not None:

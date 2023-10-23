@@ -1,4 +1,7 @@
 import requests
+from bs4 import BeautifulSoup
+import json
+import re
 
 def get_manga_chapter(manga_name: str) -> tuple:
 
@@ -12,11 +15,33 @@ def get_manga_chapter(manga_name: str) -> tuple:
     data = response.json()
 
     for content in data:
-        if content['rus_name'] == manga_name:
+        if content['rus_name'].lower() == manga_name.lower():
             manga_url = content['href']
-            last_chapter = content['chap_count']
-            chapter_date = content['last_chapter_at']
             break
+
+    response = requests.get(manga_url, headers=headers)
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+    # Находим тег <script> в HTML
+    script_tag = soup.find('script')
+
+    # Извлекаем текст скрипта
+    script_text = script_tag.string
+
+    pattern = re.compile(r'window\.__DATA__\s*=\s*({.*?});', re.DOTALL)
+    match = pattern.search(script_text)
+    if match:
+        data_text = match.group(1)
+        data = json.loads(data_text)
+    else:
+        print("JSON data not found.")
+
+    # Получаем первый элемент списка "list" внутри "chapters"
+    chapters = data['chapters']['list'][0]
+
+    # Извлекаем значение "chapter_number" из первого элемента
+    last_chapter = chapters['chapter_number']
+    chapter_date = chapters['chapter_created_at']
 
     return manga_url, float(last_chapter), chapter_date
 
@@ -25,4 +50,3 @@ def mangalib_parser (manga_name:str)-> tuple:
         return get_manga_chapter(manga_name)
     except Exception as e:
         return f"Произошла ошибка при обработке запроса: {e}"
-
