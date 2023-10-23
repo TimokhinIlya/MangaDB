@@ -143,9 +143,19 @@ def button_manga_parser():
     manga_names = [item["manga_name"] for item in data]
     for i in range(len(manga_names)):
         manga_list = []
-        manga_list.extend([remanga_parser(manga_names[i]), mangalib_parser(manga_names[i]), readmanga_parser(manga_names[i])])
+        remanga_result = remanga_parser(manga_names[i])
+        if remanga_result is not None:
+            manga_list.append(remanga_result)
+        mangalib_result = mangalib_parser(manga_names[i])
+        if mangalib_result is not None:
+            manga_list.append(mangalib_result)
+        readmanga_result = readmanga_parser(manga_names[i])
+        if readmanga_result is not None:
+            manga_list.append(readmanga_result)
+        print(manga_list)
         result = max(manga_list, key = lambda x: x[1])
         manga_upd(result[0], result[1], result[2], manga_names[i])
+
 # Создаем экземпляр главного окна
 root = tk.Tk()
 root.title("MangaDB")
@@ -205,6 +215,7 @@ manga_names_text.place(x=200, y=75)
 manga_names_text.configure(font=("Georgia", 10, "italic"))
 
 data = manga_query()
+'''
 manga_details = [(item["manga_name"], math.ceil(item["last_chapter"] - item["current_chapter"])) for item in data]
 # Сортируем список по второму элементу каждого кортежа
 manga_details.sort(key=lambda x: x[1], reverse=True)
@@ -214,7 +225,7 @@ manga_names_text.delete(1.0, tk.END)
 if manga_details:
     for name, diff in manga_details:
         manga_names_text.insert(tk.END, f"{name}\t:{diff}\n")
-
+'''
 # Создаем вертикальный ползунок
 scrollbar = tk.Scrollbar(root, command=manga_names_text.yview)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)

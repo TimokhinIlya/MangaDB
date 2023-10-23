@@ -5,14 +5,12 @@ from urllib.parse import quote
 def get_manga_chapter(manga_name: str) -> tuple:
 
     json_url = f"https://readmanga.live/search/suggestion?query={manga_name}&types[]=CREATION&types[]=FEDERATION_MANGA_SUBJECT"
-
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
     }
 
     # Преобразование URL-адреса с использованием urllib.parse.quote()
     encoded_url = quote(json_url, safe=':/?&=')
-
     response = requests.get(encoded_url, headers=headers)
     data = response.json()
 
@@ -22,17 +20,19 @@ def get_manga_chapter(manga_name: str) -> tuple:
         if suggestion['value'].lower() == manga_name.lower():
             link = suggestion['link']
             break
-
+            
     if link is not None:
-        manga_url = f"https://readmanga.live/{link}"
+        if link.startswith("http"):
+            manga_url = link
+        else:
+            manga_url = f"https://readmanga.live/{link}"
     else:
-        manga_url = None
+        return None
     response = requests.get(manga_url, headers=headers)
 
     soup = BeautifulSoup(response.text, "lxml")
 
-    number = soup.find('a', class_=['chapter-link read-last-chapter','chapter-link read-last-chapter manga-mtr'])
-    
+    number = soup.find('a', class_=["chapter-link read-last-chapter", "chapter-link read-last-chapter manga-mtr"])
     date = soup.find('td', class_='d-none d-sm-table-cell date text-right')
 
     href_value = number.get('href')  # Получаем значение атрибута href
@@ -41,7 +41,7 @@ def get_manga_chapter(manga_name: str) -> tuple:
     
     return manga_url, float(last_chapter), chapter_date
 
-def readmanga_parser (manga_name:str)-> tuple:
+def readmanga_parser(manga_name:str)-> tuple:
     try:
         return get_manga_chapter(manga_name)
     except Exception as e:

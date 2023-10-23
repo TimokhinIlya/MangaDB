@@ -14,11 +14,15 @@ def get_manga_chapter(manga_name: str) -> tuple:
     response = requests.get(json_url, headers=headers)
     data = response.json()
 
+    manga_url = None
+
     for content in data:
         if content['rus_name'].lower() == manga_name.lower():
             manga_url = content['href']
             break
 
+    if manga_url == None:
+        return None
     response = requests.get(manga_url, headers=headers)
 
     soup = BeautifulSoup(response.text, 'html.parser')
@@ -45,7 +49,7 @@ def get_manga_chapter(manga_name: str) -> tuple:
 
     return manga_url, float(last_chapter), chapter_date
 
-def mangalib_parser (manga_name:str)-> tuple:
+def mangalib_parser(manga_name:str)-> tuple:
     try:
         return get_manga_chapter(manga_name)
     except Exception as e:
