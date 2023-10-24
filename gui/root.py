@@ -5,7 +5,6 @@ from db.db_operations import *
 from parsers.mangalib_parser import mangalib_parser
 from parsers.readmanga_parser import  readmanga_parser
 from parsers.remanga_parser import remanga_parser
-from time import sleep
 import math
 
 data = manga_query()
