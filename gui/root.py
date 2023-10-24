@@ -1,10 +1,14 @@
 import tkinter as tk
+from tkinter import ttk
 import webbrowser  as wb
 from db.db_operations import *
 from parsers.mangalib_parser import mangalib_parser
 from parsers.readmanga_parser import  readmanga_parser
 from parsers.remanga_parser import remanga_parser
+from time import sleep
 import math
+
+data = manga_query()
 
 def button_new_manga_ins():
     def new_manga_ins_input_window():
@@ -152,9 +156,10 @@ def button_manga_parser():
         readmanga_result = readmanga_parser(manga_names[i])
         if readmanga_result is not None:
             manga_list.append(readmanga_result)
-        print(manga_list)
         result = max(manga_list, key = lambda x: x[1])
         manga_upd(result[0], result[1], result[2], manga_names[i])
+        progress['value'] += 100/len(manga_names)
+        root.update_idletasks()
 
 # Создаем экземпляр главного окна
 root = tk.Tk()
@@ -209,23 +214,30 @@ entry = tk.Entry(root,width=50)
 entry.pack(pady=10)
 entry.place(x=50, y=25)
 
+progress = ttk.Progressbar(root, orient=tk.HORIZONTAL, length=150, mode='determinate')
+progress.place(x=458, y=2)
+progress['maximum'] = 100
+
 manga_names_text = tk.Text(root, height=16, width=45)
 manga_names_text.pack(pady=10)
 manga_names_text.place(x=200, y=75)
-manga_names_text.configure(font=("Georgia", 10, "italic"))
+manga_names_text.configure(font=("Georgia", 10))
 
-data = manga_query()
-'''
-manga_details = [(item["manga_name"], math.ceil(item["last_chapter"] - item["current_chapter"])) for item in data]
-# Сортируем список по второму элементу каждого кортежа
-manga_details.sort(key=lambda x: x[1], reverse=True)
+def button_manga_res():
+    data = manga_query()
+    manga_details = [(item["manga_name"], math.ceil(item["last_chapter"] - item["current_chapter"])) for item in data if item["last_chapter"] is not None]
+    # Сортируем список по второму элементу каждого кортежа
+    manga_details.sort(key=lambda x: x[1], reverse=True)
 
-# Очищаем текстовое поле и добавляем имена манги и разницу
-manga_names_text.delete(1.0, tk.END)
-if manga_details:
-    for name, diff in manga_details:
-        manga_names_text.insert(tk.END, f"{name}\t:{diff}\n")
-'''
+    # Очищаем текстовое поле и добавляем имена манги и разницу
+    manga_names_text.delete(1.0, tk.END)
+    if manga_details:
+        for name, diff in manga_details:
+            manga_names_text.insert(tk.END, f"{name}: {diff}\n")
+
+button_query = tk.Button(root, text="R", command=button_manga_res,font=("Georgia", 7))
+button_query.place(x=360, y=23)
+
 # Создаем вертикальный ползунок
 scrollbar = tk.Scrollbar(root, command=manga_names_text.yview)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
