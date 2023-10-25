@@ -1,8 +1,5 @@
 from utils import webdriver, Service, BeautifulSoup, re, sleep
 
-# Устанавливаем множество имен манги для парсинга
-manga_set = {'Берсерк', 'Синяя Тюрьма: Блю Лок', 'Магическая битва'}
-
 # Функция для получения главы манги
 def get_manga_chapter(manga_name: str) -> tuple:
 
@@ -78,6 +75,10 @@ def get_manga_chapter(manga_name: str) -> tuple:
         driver.quit()
 
 def com_x_parser(manga_name: str) -> tuple:
+
+    # Устанавливаем множество имен манги для парсинга
+    manga_set = {'Берсерк', 'Синяя Тюрьма: Блю Лок', 'Магическая битва'}
+
     if manga_name in manga_set:
         return get_manga_chapter(manga_name)
     else:

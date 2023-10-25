@@ -88,12 +88,15 @@ def get_manga_chapter(manga_id: int) -> tuple:
         return None
     
 def remanga_parser(manga_name:str)-> tuple:
-    manga_tuple = tuple()
-    manga_url = get_manga_link(manga_name)
-    manga_id = get_manga_id(manga_url)
-    manga_chapter = get_manga_chapter(manga_id)
-    if manga_url and manga_id and manga_chapter is not None:
-        manga_tuple = (manga_url,) + manga_chapter
-        return manga_tuple
-    else:
-        return None
+    # Устанавливаем исключения
+    manga_set = {'Кэнган Омега'}
+
+    if manga_name not in manga_set:
+        manga_tuple = tuple()
+        manga_url = get_manga_link(manga_name)
+        manga_id = get_manga_id(manga_url)
+        manga_chapter = get_manga_chapter(manga_id)
+
+        if manga_url and manga_id and manga_chapter is not None:
+            manga_tuple = (manga_url,) + manga_chapter
+            return manga_tuple
