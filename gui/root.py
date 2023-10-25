@@ -6,7 +6,7 @@ root = tk.Tk()
 root.title("MangaDB")
 
 # Устанавливаем размеры окна
-window_width = 735
+window_width = 780
 window_height = 375
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
@@ -25,7 +25,7 @@ entry.pack(pady=10)
 entry.place(x=50, y=25)
 
 # Создаем текстовый блок для отображения названий манги
-manga_names_text = tk.Text(root, height=16, width=52)
+manga_names_text = tk.Text(root, height=16, width=56)
 manga_names_text.pack(pady=10)
 manga_names_text.place(x=200, y=75)
 manga_names_text.configure(font=("Georgia", 10))    # Устанавливаем шрифт текстового блока
@@ -278,7 +278,7 @@ with create_connection() as conn:
                 continue
 
     button_start = tk.Button(root, text="Запуск анализатора", command=button_manga_parser, width=20, height=2, font=("Georgia", 10))
-    button_start.place(x=501, y=23)
+    button_start.place(x=537, y=23)
 
 # Запускаем главный цикл обработки событий
 root.mainloop()

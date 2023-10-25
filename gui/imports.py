@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-import webbrowser  as wb
+import webbrowser as wb
 from db.db_operations import *
 from parsers.mangalib_parser import mangalib_parser
 from parsers.readmanga_parser import  readmanga_parser
