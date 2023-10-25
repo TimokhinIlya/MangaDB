@@ -270,6 +270,7 @@ with create_connection() as conn:
             if manga_list != []:
                 # Находим максимальное значение из списка
                 result = max(manga_list, key=lambda x: x[1])
+                print(f'Манга - {manga_names[i]} была успешно обновлена')
 
                 # Обновляем данные манги
                 manga_upd(result[0], result[1], result[2], manga_names[i])
