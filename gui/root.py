@@ -1,4 +1,3 @@
-# Импортируем все необходимые модули из файлов imports
 from imports import *
 
 # Создаем экземпляр главного окна
@@ -220,7 +219,7 @@ with create_connection() as conn:
         # Сортируем список по второму элементу каждого кортежа
         manga_details.sort(key=lambda x: x[1], reverse=True)
 
-        # Очищаем текстовое поле и добавляем имена манги и разницу
+        # Очищаем текстовое поле и добавляем имена манги и разницу между главами
         manga_names_text.delete(1.0, tk.END)
         if manga_details:
             for name, diff in manga_details:
@@ -239,12 +238,36 @@ with create_connection() as conn:
 
     # Функция для кнопки "Запуск анализатора"
     def button_manga_parser():
+        
+        def close_window():
+            new_window.destroy()
 
         data = manga_query()
+
+        # Окно для вывода результатов анализа
+        new_window = tk.Toplevel(root)
+        new_window.title("Ход выполнения анализа")
+        window_width = 435
+        window_height = 500
+        screen_width = new_window.winfo_screenwidth()
+        screen_height = new_window.winfo_screenheight()
+        x_coordinate = (screen_width / 2) - (window_width / 2)
+        y_coordinate = (screen_height / 2) - (window_height / 2)
+        new_window.geometry(f"{window_width}x{window_height}+{int(x_coordinate)}+{int(y_coordinate)}")
+
+        text_widget = tk.Text(new_window,height=30, width=40)
+        text_widget.place(x=50, y=37)
+        text_widget.configure(font=("Georgia", 8))
+        
+        scrollbar = tk.Scrollbar(new_window, command=text_widget.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        text_widget.config(yscrollcommand=scrollbar.set)
 
         # Получаем список имен манги
         manga_names = [item["manga_name"] for item in data]
 
+        new_window.update()
+        
         # Проходим по списку и обновляем данные из трех разных источников, выбирая максимальное значение
         for i in range(len(manga_names)):
 
@@ -270,12 +293,21 @@ with create_connection() as conn:
             if manga_list != []:
                 # Находим максимальное значение из списка
                 result = max(manga_list, key=lambda x: x[1])
-                print(f'Манга - {manga_names[i]} была успешно обновлена')
-
+                output_text = f'Манга - "{manga_names[i]}" была успешно обновлена\n'
+                text_widget.insert(tk.END, output_text)
+                new_window.update()
+            
                 # Обновляем данные манги
                 manga_upd(result[0], result[1], result[2], manga_names[i])
             else:
+                error_text = f'"{manga_names[i]}" - критический промах\n'
+                text_widget.insert(tk.END, error_text)
+                new_window.update()
                 continue
+
+        button = tk.Button(new_window, text="Принять", command=close_window)
+        button.pack(pady=20)
+        button.place(x=188, y=467)
 
     button_start = tk.Button(root, text="Запуск анализатора", command=button_manga_parser, width=20, height=2, font=("Georgia", 10))
     button_start.place(x=501, y=23)

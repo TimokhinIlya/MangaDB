@@ -77,7 +77,7 @@ def get_manga_chapter(manga_name: str) -> tuple:
 def com_x_parser(manga_name: str) -> tuple:
 
     # Устанавливаем множество имен манги для парсинга
-    manga_set = {'Берсерк', 'Синяя Тюрьма: Блю Лок', 'Магическая битва'}
+    manga_set = {'Берсерк', 'Синяя Тюрьма: Блю Лок'}
 
     if manga_name in manga_set:
         return get_manga_chapter(manga_name)
