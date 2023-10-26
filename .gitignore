@@ -1,0 +1,5 @@
+venv/
+db/__pycache__
+parsers/__pycache__
+gui/__pycache__
+parsers/chromedriver/chromedriver.exe
