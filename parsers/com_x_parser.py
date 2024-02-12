@@ -68,11 +68,6 @@ def get_manga_chapter(manga_name: str) -> tuple:
     except Exception as e:
         print(f'Ошибка: {e}')
         return None
-    
-    # Завершение работы веб-драйвера
-    finally:
-        driver.close()
-        driver.quit()
 
 def com_x_parser(manga_name: str) -> tuple:
 

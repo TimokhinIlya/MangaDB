@@ -201,8 +201,25 @@ with create_connection() as conn:
 
     # Функция для кнопки "Удалить" мангу
     def button_manga_del():
-        manga_name = entry.get()
-        manga_del(manga_name)
+
+        def input_window_del():
+            name_del = str(entry.get())
+            manga_del(name_del)
+            input_window.destroy()
+
+        input_window = tk.Toplevel(root)
+        input_window.title("Вы уверены, что хотите удалить мангу?")
+
+        window_width = 385
+        window_height = 80
+        screen_width = input_window.winfo_screenwidth()
+        screen_height = input_window.winfo_screenheight()
+        x_coordinate = (screen_width / 2) - (window_width / 2)
+        y_coordinate = (screen_height / 2) - (window_height / 2)
+        input_window.geometry(f"{window_width}x{window_height}+{int(x_coordinate)}+{int(y_coordinate)}")
+
+        button = tk.Button(input_window, text="Принять", command=input_window_del)
+        button.pack(pady=20)
 
     button_del = tk.Button(root, text="Удалить", command=button_manga_del)
     button_del.pack(pady=10)
@@ -223,18 +240,10 @@ with create_connection() as conn:
         manga_names_text.delete(1.0, tk.END)
         if manga_details:
             for name, diff in manga_details:
-                manga_names_text.insert(tk.END, f"{name}: {diff}\n")
+                manga_names_text.insert(tk.END, f"{name} :- {diff}\n")
 
     button_reset = tk.Button(root, text="R", command=button_manga_reset, font=("Georgia", 7))
     button_reset.place(x=360, y=23)
-
-    # Функция для кнопки "Copy"
-    def copy_text():
-        root.clipboard_clear()    # Очищаем буфер обмена
-        root.clipboard_append(manga_names_text.selection_get())    # Сохраняем в буфер обмена выделенный текст
-
-    button_copy = tk.Button(root, text="Copy", command=copy_text, font=("Georgia", 7))
-    button_copy.place(x=380, y=23)
 
     # Функция для кнопки "Запуск анализатора"
     def button_manga_parser():
@@ -247,7 +256,7 @@ with create_connection() as conn:
         # Окно для вывода результатов анализа
         new_window = tk.Toplevel(root)
         new_window.title("Ход выполнения анализа")
-        window_width = 435
+        window_width = 550
         window_height = 500
         screen_width = new_window.winfo_screenwidth()
         screen_height = new_window.winfo_screenheight()
@@ -255,14 +264,14 @@ with create_connection() as conn:
         y_coordinate = (screen_height / 2) - (window_height / 2)
         new_window.geometry(f"{window_width}x{window_height}+{int(x_coordinate)}+{int(y_coordinate)}")
 
-        text_widget = tk.Text(new_window,height=30, width=40)
+        text_widget = tk.Text(new_window,height=30, width=54)
         text_widget.place(x=50, y=37)
-        text_widget.configure(font=("Georgia", 8))
+        text_widget.configure(font=("Georgia", 9))
         
         scrollbar = tk.Scrollbar(new_window, command=text_widget.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         text_widget.config(yscrollcommand=scrollbar.set)
-
+    
         # Получаем список имен манги
         manga_names = [item["manga_name"] for item in data]
 
@@ -304,7 +313,7 @@ with create_connection() as conn:
                 text_widget.insert(tk.END, error_text)
                 new_window.update()
                 continue
-
+    
         button = tk.Button(new_window, text="Принять", command=close_window)
         button.pack(pady=20)
         button.place(x=188, y=467)
