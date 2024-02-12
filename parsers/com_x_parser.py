@@ -56,7 +56,7 @@ def get_manga_chapter(manga_name: str) -> tuple:
             # Получение информации о последней главе
             title = title_tag.get('title')
             # Извлечение номера последней главы
-            last_chapter = max(re.findall(r'\d+', title))
+            last_chapter = max(map(float, re.findall(r'\d+', title)))
 
         # Получение даты последней главы
         chapter_date = soup.find('div', class_='cl__item-date').get_text().strip()
