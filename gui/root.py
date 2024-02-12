@@ -266,7 +266,7 @@ with create_connection() as conn:
 
         text_widget = tk.Text(new_window,height=30, width=54)
         text_widget.place(x=50, y=37)
-        text_widget.configure(font=("Georgia", 9))
+        text_widget.configure(font=("Georgia", 8))
         
         scrollbar = tk.Scrollbar(new_window, command=text_widget.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
